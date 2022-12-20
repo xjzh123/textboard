@@ -1,0 +1,17 @@
+C:\Users\JiaZhen>curl "localhost:5000/read/?password=123&index=awa"
+目录
+C:\Users\JiaZhen>curl "localhost:5000/read/?password=123&index=awa"
+目录
+C:\Users\JiaZhen>curl "localhost:5000/read/?password=123&index=awa"
+目录
+C:\Users\JiaZhen>curl "localhost:5000/read/?password=1232&index=awa"
+403
+C:\Users\JiaZhen>curl "localhost:5000/read/?password=123&index=awa"
+目录
+C:\Users\JiaZhen>curl "localhost:5000/write/?password=123&index=awa&text=新目录"
+403
+C:\Users\JiaZhen>curl "localhost:5000/write/?password=123456&index=awa&text=新目录"
+200
+C:\Users\JiaZhen>curl "localhost:5000/read/?password=123&index=awa"
+ÐÂÄ¿Â¼
+C:\Users\JiaZhen>curl "localhost:5000/read/?password=123&index=awa"
