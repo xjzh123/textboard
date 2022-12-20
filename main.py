@@ -1,5 +1,5 @@
 from flask import Flask, request, send_file, redirect
-import json,time
+import json
 
 
 def readdb():
