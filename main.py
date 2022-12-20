@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file, redirect
 import json,time
 
 
@@ -73,6 +73,11 @@ def write():
 @app.route('/',methods=['GET','POST'])
 def view():
     return send_file('template.html')
+
+
+@app.route('/<index>/',methods=['GET','POST'])
+def link(index):
+    return redirect('/?'+index)
 
 
 if __name__ == '__main__':
