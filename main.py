@@ -3,8 +3,14 @@ import json
 
 
 def readdb():
-    with open('data.json', encoding='UTF-8') as f:
-        return json.loads(f.read())
+    try:
+        with open('data.json', encoding='UTF-8') as f:
+            return json.loads(f.read())
+    except (json.JSONDecodeError, FileNotFoundError):
+        with open('data.json', 'w', encoding='UTF-8') as f:
+            f.write('{}')
+        with open('data.json', encoding='UTF-8') as f:
+            return json.loads(f.read())
 
 
 app = Flask(__name__)
@@ -22,7 +28,7 @@ def read():
         canRead = True
     else:
         pwd = get('password')
-        if pwd == readdb()[index]['viewpwd']:
+        if hash(pwd) == readdb()[index]['viewpwd']:
             canRead = True
     if canRead:
         return json.dumps({ 'status': 'successful', 'text': readdb()[index]["text"] })
@@ -52,16 +58,16 @@ def write():
             canWrite = True
         else:
             pwd = get('password')
-            if pwd == readdb()[index]['editpwd']:
+            if hash(pwd) == readdb()[index]['editpwd']:
                 canWrite = True
     if canWrite:
         db = readdb()
         if shouldCreate:
             db[index] = {}
             if get('viewpwd'):
-                db[index]['viewpwd'] = get('viewpwd')
+                db[index]['viewpwd'] = hash(get('viewpwd'))
             if get('editpwd'):
-                db[index]['editpwd'] = get('password')
+                db[index]['editpwd'] = hash(get('password'))
         db[index]['text'] = get('text')
         with open('data.json', 'w', encoding='UTF-8') as f:
             f.write(json.dumps(db))
