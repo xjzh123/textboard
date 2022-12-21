@@ -17,10 +17,11 @@ def readdb():
         try:
             with open('data.json', encoding='UTF-8') as f:
                 print('[DEBUG] Json data broken, this is the last data. Now re-creating data...')
-                print(f.read())
-                with open('data.old.json', 'w', encoding='UTF-8') as f2:
-                    f2.write(f.read())
-                    print('[DEBUG] Old data saved in data.old.json')
+                old = f.read()
+                print(old)
+                with open('data.old', 'w', encoding='UTF-8') as f2:
+                    f2.write(old)
+                    print('[DEBUG] Old data saved in data.old')
         except:
             pass
         with open('data.json', 'w', encoding='UTF-8') as f:
