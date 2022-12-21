@@ -4,6 +4,7 @@ import hashlib
 import pathlib
 import random
 import time
+from urllib.parse import unquote
 
 isWriting = False
 
@@ -40,7 +41,8 @@ app = Flask(__name__)
 
 
 def get(index):
-    return request.values.get(index)
+    result = request.values.get(index)
+    return unquote(result) if result is not None else result
 
 
 @app.route('/api/read/', methods=['GET', 'POST'])
@@ -107,10 +109,8 @@ def write():
         if shouldCreate:
             db[index] = {}
             if get('viewpwd') is not None:
-                print(get('viewpwd'))
                 db[index]['viewpwd'] = hash(get('viewpwd'))
             if get('editpwd') is not None:
-                print(get('editpwd'))
                 db[index]['editpwd'] = hash(get('editpwd'))
         db[index]['text'] = get('text')
         with open('data.json', 'w', encoding='UTF-8') as f:
