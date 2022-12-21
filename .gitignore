@@ -139,3 +139,4 @@ cython_debug/
 
 # Project data
 data.json
+salt.txt

@@ -53,6 +53,7 @@ function edit() {
         $('#submit')[0].classList.remove('hidden')
         $('#text')[0].classList.add('hidden')
         $('#textarea')[0].classList.remove('hidden')
+        updateTextareaSize()
     }
 }
 
