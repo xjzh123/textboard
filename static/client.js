@@ -4,6 +4,8 @@ if (index.length > 0) {
     document.title = 'TextBoard - ' + index
 }
 
+var md = new Remarkable();
+
 var pagedata = { doPageExist: undefined, doEditNeedPwd: undefined, doViewNeedPwd: undefined, successful: undefined, viewpwd: undefined, editpwd: undefined }
 
 function read(data) {
@@ -14,7 +16,7 @@ function read(data) {
     } else if (typeof data.text == 'string') {
         pagedata.text = data.text
         pagedata.successful = true
-        $('#text')[0].textContent = data.text
+        $('#text')[0].innerHTML = md.render(data.text)
     }
 }
 
@@ -88,15 +90,13 @@ function submit() {
     pagedata.successful = false
     $('#text').text('正在重新加载……')
     $.post(`/api/write/`, payload, write)
-    setTimeout(function () {
-        $.get(`/api/check/?index=${index}`, check)
-        pagedata.edit = false
+    $.get(`/api/check/?index=${index}`, check)
+    pagedata.edit = false
 
-        $('#edit')[0].classList.remove('hidden')
-        $('#submit')[0].classList.add('hidden')
-        $('#text')[0].classList.remove('hidden')
-        $('#textarea')[0].classList.add('hidden')
-    }, 0.01)//如果太快了，服务端还没创建好页面，会认为页面不存在
+    $('#edit')[0].classList.remove('hidden')
+    $('#submit')[0].classList.add('hidden')
+    $('#text')[0].classList.remove('hidden')
+    $('#textarea')[0].classList.add('hidden')
 }
 
 function updateTextareaSize() {
