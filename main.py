@@ -14,6 +14,15 @@ def readdb():
         with open('data.json', encoding='UTF-8') as f:
             return json.loads(f.read())
     except (json.JSONDecodeError, FileNotFoundError):
+        try:
+            with open('data.json', encoding='UTF-8') as f:
+                print('[DEBUG] Json data broken, this is the last data. Now re-creating data...')
+                print(f.read())
+                with open('data.old.json', 'w', encoding='UTF-8') as f2:
+                    f2.write(f.read())
+                    print('[DEBUG] Old data saved in data.old.json')
+        except:
+            pass
         with open('data.json', 'w', encoding='UTF-8') as f:
             f.write('{}')
         with open('data.json', encoding='UTF-8') as f:
@@ -23,9 +32,11 @@ def readdb():
 if not pathlib.Path('salt.txt').is_file():
     with open('salt.txt', 'w') as f:
         f.write(str(random.random() * 114514))
+        print('[DEBUG] new salt generated and saved in salt.txt')
 
 with open('salt.txt') as f:
     salt = f.read()
+    print(f'[DEBUG] salt: {salt}')
 
 
 def hash(data: str):
