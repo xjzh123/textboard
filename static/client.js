@@ -9,11 +9,19 @@ var pagedata = { doPageExist: undefined, doEditNeedPwd: undefined, doViewNeedPwd
 function read(data) {
     data = JSON.parse(data)
     if (data.status == 'error') {
+        alert('密码错误，查看失败')
         $('#text').text('密码错误，查看失败')
     } else if (typeof data.text == 'string') {
         pagedata.text = data.text
         pagedata.successful = true
         $('#text')[0].textContent = data.text
+    }
+}
+
+function write(data) {
+    data = JSON.parse(data)
+    if (data.status == 'error') {
+        alert('密码错误，修改失败')
     }
 }
 
@@ -78,7 +86,7 @@ function submit() {
     }
     pagedata.successful = false
     $('#text').text('正在重新加载……')
-    $.post(`/api/write/`, payload, read)
+    $.post(`/api/write/`, payload, write)
     setTimeout(function () {
         $.get(`/api/check/?index=${index}`, check)
         pagedata.edit = false
@@ -90,10 +98,10 @@ function submit() {
     }, 0.01)//如果太快了，服务端还没创建好页面，会认为页面不存在
 }
 
-function updateTextareaSize () {
+function updateTextareaSize() {
     input = $('#textarea')[0]
-	input.style.height = 0;
-	input.style.height = input.scrollHeight + 'px';
+    input.style.height = 0;
+    input.style.height = input.scrollHeight + 'px';
 }
 
 $('#textarea')[0].oninput = updateTextareaSize

@@ -1,5 +1,8 @@
 from flask import Flask, request, send_file, redirect
 import json
+import hashlib
+import pathlib
+import random
 
 
 def readdb():
@@ -11,6 +14,21 @@ def readdb():
             f.write('{}')
         with open('data.json', encoding='UTF-8') as f:
             return json.loads(f.read())
+
+if not pathlib.Path('salt.txt').is_file():
+    with open('salt.txt', 'w') as f:
+        f.write(str(random.random()*114514))
+
+with open('salt.txt') as f:
+    salt = f.read()
+
+def hash(data:str):
+    if data is None:
+        return
+    obj = hashlib.md5(salt.encode('utf-8'))
+    obj.update(data.encode('utf-8'))
+    result = obj.hexdigest()
+    return result
 
 
 app = Flask(__name__)
@@ -64,10 +82,12 @@ def write():
         db = readdb()
         if shouldCreate:
             db[index] = {}
-            if get('viewpwd'):
+            if get('viewpwd') is not None:
+                print(get('viewpwd'))
                 db[index]['viewpwd'] = hash(get('viewpwd'))
-            if get('editpwd'):
-                db[index]['editpwd'] = hash(get('password'))
+            if get('editpwd') is not None:
+                print(get('editpwd'))
+                db[index]['editpwd'] = hash(get('editpwd'))
         db[index]['text'] = get('text')
         with open('data.json', 'w', encoding='UTF-8') as f:
             f.write(json.dumps(db))
@@ -87,4 +107,4 @@ def link(index):
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
