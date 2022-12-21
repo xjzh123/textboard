@@ -141,3 +141,4 @@ cython_debug/
 data.json
 salt.txt
 data.old
+.breakpoints
