@@ -35,11 +35,10 @@ function check(data) {
     } else {
         password = pagedata.viewpwd ? pagedata.viewpwd : prompt('请输入查看密码：')
         if (password == undefined) return
+        if (typeof password == 'string') pagedata.viewpwd = password
         $.post(`/api/read/`, { index: index, password: password }, read)
     }
 }
-
-$.get(`/api/check/?index=${index}`, check)
 
 function edit() {
     if (!pagedata.successful) {
@@ -70,6 +69,7 @@ function submit() {
         if (pagedata.doEditNeedPwd) {
             password = pagedata.editpwd ? pagedata.editpwd : prompt('请输入编辑密码：')
             if (password == undefined) return
+            if (typeof password == 'string') pagedata.editpwd = password
         }
         if (password) {
             payload.password = password
@@ -107,3 +107,5 @@ function updateTextareaSize() {
 $('#textarea')[0].oninput = updateTextareaSize
 
 updateTextareaSize()
+
+$.get(`/api/check/?index=${index}`, check)
