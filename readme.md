@@ -17,3 +17,9 @@ Can set view password and edit password
 0.6.1：修复css导致的markdown行距过大bug。
 
 0.6.2：修复输入框自适应高度超过网页高度导致的滚动bug。
+
+0.6.3：试图建立备份机制。
+
+0.6.4：试图建立数据修复机制。
+
+0.6.5：试图修复数据修复机制。
