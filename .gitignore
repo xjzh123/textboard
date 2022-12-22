@@ -142,3 +142,4 @@ data.json
 salt.txt
 data.old
 .breakpoints
+*.data.json
