@@ -6,6 +6,7 @@ import random
 import time
 import os
 from urllib.parse import unquote
+#from gevent import pywsgi
 
 isWriting = False
 
@@ -44,6 +45,8 @@ if not pathlib.Path('salt.txt').is_file():
 with open('salt.txt') as f:
   salt = f.read()
   print(f'[DEBUG] salt: {salt}')
+
+print('[DEBUG] WSGI ready')
 
 
 def hash(data: str):
@@ -156,3 +159,5 @@ def link(index):
 
 if __name__ == '__main__':
   app.run(host='0.0.0.0')
+  #server = pywsgi.WSGIServer(('127.0.0.1', 5000), app)
+  #server.serve_forever()
