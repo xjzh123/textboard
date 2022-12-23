@@ -9,7 +9,7 @@
    id="svg5"
    inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
    sodipodi:docname="textboard-banner.svg"
-   inkscape:export-filename="textboard.png"
+   inkscape:export-filename="textboard-banner.jpg"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -29,7 +29,7 @@
      showgrid="false"
      inkscape:zoom="0.8409652"
      inkscape:cx="698.00748"
-     inkscape:cy="582.06927"
+     inkscape:cy="583.25838"
      inkscape:window-width="2240"
      inkscape:window-height="1294"
      inkscape:window-x="-11"
@@ -42,6 +42,54 @@
      inkscape:label="图层 1"
      inkscape:groupmode="layer"
      id="layer1">
+    <g
+       id="g1336"
+       transform="translate(150,49.395124)">
+      <rect
+         style="fill:#999999;stroke-width:0.264583;-inkscape-stroke:none;stop-color:#000000"
+         id="rect294-2"
+         width="100"
+         height="100"
+         x="7.1054274e-15"
+         y="0" />
+      <path
+         id="rect272"
+         style="fill:#ffffff;fill-opacity:1;stroke-width:0.264583;-inkscape-stroke:none;stop-color:#000000"
+         d="m 23.425444,12.584762 c -5.53999,0 -9.999907,4.459918 -9.999907,9.999906 v 53.989986 c 0,5.53999 4.459917,9.999907 9.999907,9.999907 h 53.14921 c 5.53999,0 9.999907,-4.459917 9.999907,-9.999907 V 22.584668 c 0,-2.795726 -1.136764,-5.315453 -2.973979,-7.126697 L 57.230098,41.828455 37.735681,46.862256 42.769999,27.367839 57.553076,12.584762 Z" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:smiley-sans;-inkscape-font-specification:smiley-sans;fill:#ff0000;stroke-width:0.264583;-inkscape-stroke:none;stop-color:#000000"
+         x="-14.629766"
+         y="59.777538"
+         id="text625-6"><tspan
+           sodipodi:role="line"
+           id="tspan623-0"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:smiley-sans;-inkscape-font-specification:smiley-sans;stroke-width:0.264583"
+           x="-14.629766"
+           y="59.777538" /></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.96px;font-family:'Fira Code';-inkscape-font-specification:'Fira Code';fill:#000000;stroke-width:0.405;-inkscape-stroke:none;stop-color:#000000"
+         x="30.061523"
+         y="83.20475"
+         id="text785-1"><tspan
+           sodipodi:role="line"
+           id="tspan783-4"
+           style="font-size:12.96px;stroke-width:0.405"
+           x="30.061523"
+           y="83.20475">board</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25.23px;font-family:'Fira Code';-inkscape-font-specification:'Fira Code';fill:#000000;stroke-width:0.525624;-inkscape-stroke:none;stop-color:#000000"
+         x="18.954163"
+         y="70.415535"
+         id="text629-1"><tspan
+           id="tspan627-4"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25.23px;font-family:'Fira Code';-inkscape-font-specification:'Fira Code';fill:#000000;stroke-width:0.525624"
+           x="18.954163"
+           y="70.415535"
+           sodipodi:role="line">TEXT</tspan></text>
+    </g>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:smiley-sans;-inkscape-font-specification:smiley-sans;fill:#ff0000;stroke-width:0.264583;-inkscape-stroke:none;stop-color:#000000"
@@ -53,43 +101,6 @@
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:smiley-sans;-inkscape-font-specification:smiley-sans;stroke-width:0.264583"
          x="-14.629766"
          y="59.777538" /></text>
-    <a
-       id="a178"
-       transform="translate(150,49.395124)">
-      <rect
-         style="fill:#999999;stroke-width:0.264583;-inkscape-stroke:none;stop-color:#000000"
-         id="rect294"
-         width="100"
-         height="100"
-         x="0"
-         y="0" />
-      <path
-         id="rect115"
-         style="fill:#ffffff;stroke-width:0.354556;-inkscape-stroke:none;stop-color:#000000"
-         d="m 26.82627,13.425537 c -7.423912,0 -13.400733,5.976821 -13.400733,13.400733 v 46.347558 c 0,7.423912 5.976821,13.400733 13.400733,13.400733 h 46.347558 c 7.423912,0 13.400733,-5.976821 13.400733,-13.400733 V 33.478577 l -14.507642,14.507641 -20.080428,0.02739 0.02739,-20.080945 14.507125,-14.507125 z" />
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25.23px;font-family:'Fira Code';-inkscape-font-specification:'Fira Code';fill:#000000;stroke-width:0.525624;-inkscape-stroke:none;stop-color:#000000"
-         x="18.954163"
-         y="70.415535"
-         id="text629"><tspan
-           id="tspan627"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25.23px;font-family:'Fira Code';-inkscape-font-specification:'Fira Code';fill:#000000;stroke-width:0.525624"
-           x="18.954163"
-           y="70.415535"
-           sodipodi:role="line">TEXT</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.96px;font-family:'Fira Code';-inkscape-font-specification:'Fira Code';fill:#000000;stroke-width:0.405;-inkscape-stroke:none;stop-color:#000000"
-         x="30.061523"
-         y="83.20475"
-         id="text785"><tspan
-           sodipodi:role="line"
-           id="tspan783"
-           style="font-size:12.96px;stroke-width:0.405"
-           x="30.061523"
-           y="83.20475">board</tspan></text>
-    </a>
     <text
        xml:space="preserve"
        style="font-size:11.9242px;font-family:'Fira Code';-inkscape-font-specification:'Fira Code';direction:ltr;fill:#000000;stroke-width:0.372632;-inkscape-stroke:none;stop-color:#000000"
