@@ -32,4 +32,6 @@ Can set view password and edit password
 
 0.6.5：试图修复数据修复机制。
 
-0.6.6：使用WSGI服务器，并且优化CSS、将remarkable.js更换为cdnjs上的最新版
+0.6.6：使用WSGI服务器，并且优化CSS、将remarkable.js更换为cdnjs上的最新版。
+
+0.6.7：添加favicon。
