@@ -138,8 +138,13 @@ dmypy.json
 cython_debug/
 
 # Project data
-data.json
 salt.txt
-data.old
-.breakpoints
+data.json
 *.data.json
+data.old
+
+# Hint config
+.hintrc
+
+# Replit config
+.breakpoints

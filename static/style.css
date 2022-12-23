@@ -5,6 +5,5 @@
 textarea {
     width: 100%;
     min-height: 22px;
-    max-height: calc(80vh);
+    max-height: calc(100vh - 100px);
 }
-

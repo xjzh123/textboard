@@ -4,7 +4,7 @@ if (index.length > 0) {
     document.title = 'TextBoard - ' + index
 }
 
-var md = new Remarkable();
+var md = new remarkable.Remarkable();
 
 var pagedata = { doPageExist: undefined, doEditNeedPwd: undefined, doViewNeedPwd: undefined, successful: undefined, viewpwd: undefined, editpwd: undefined }
 
