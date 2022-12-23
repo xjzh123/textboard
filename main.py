@@ -6,7 +6,7 @@ import random
 import time
 import os
 from urllib.parse import unquote
-#from gevent import pywsgi
+from gevent import pywsgi
 
 isWriting = False
 
@@ -158,6 +158,6 @@ def link(index):
 
 
 if __name__ == '__main__':
-  app.run(host='0.0.0.0')
-  #server = pywsgi.WSGIServer(('127.0.0.1', 5000), app)
-  #server.serve_forever()
+  #app.run(host='0.0.0.0')
+  server = pywsgi.WSGIServer(('127.0.0.1', 5000), app)
+  server.serve_forever()
