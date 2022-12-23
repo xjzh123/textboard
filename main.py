@@ -159,5 +159,5 @@ def link(index):
 
 if __name__ == '__main__':
   #app.run(host='0.0.0.0')
-  server = pywsgi.WSGIServer(('127.0.0.1', 5000), app)
+  server = pywsgi.WSGIServer(('0.0.0.0', 5000), app)
   server.serve_forever()
