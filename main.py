@@ -157,7 +157,19 @@ def link(index):
   return redirect('/?' + index)
 
 
+
+
+@app.route('/api/backup/')
+def exportData():
+  key = get('key')
+  if hash(key) == '6a940461c12f09e8ce1e5b8104046c68':
+    return send_file('data.json', as_attachment=True)
+  else:
+    return json.dumps({'status': 'error'})
+
+
 if __name__ == '__main__':
-  #app.run(host='0.0.0.0')
+  #app.run(host='0.0.0.0'
+
   server = pywsgi.WSGIServer(('0.0.0.0', 5000), app)
   server.serve_forever()
