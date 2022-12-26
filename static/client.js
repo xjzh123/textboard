@@ -9,7 +9,6 @@ var md = new remarkable.Remarkable();
 var pagedata = { doPageExist: undefined, doEditNeedPwd: undefined, doViewNeedPwd: undefined, successful: undefined, viewpwd: undefined, editpwd: undefined }
 
 function read(data) {
-    data = JSON.parse(data)
     if (data.status == 'error') {
         alert('密码错误，查看失败')
         $('#text').text('密码错误，查看失败')
@@ -21,14 +20,12 @@ function read(data) {
 }
 
 function write(data) {
-    data = JSON.parse(data)
     if (data.status == 'error') {
         alert('密码错误，修改失败')
     }
 }
 
 function check(data) {
-    data = JSON.parse(data)
     pagedata.doViewNeedPwd = data.viewpwd
     pagedata.doEditNeedPwd = data.editpwd
     pagedata.doPageExist = data.existing

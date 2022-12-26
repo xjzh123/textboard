@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file, redirect
+from flask import Flask, request, send_file, redirect, jsonify
 import json
 import hashlib
 import pathlib
@@ -71,7 +71,7 @@ def read():
   canRead = False
   index = get('index')
   if index not in readdb().keys():
-    return json.dumps({'status': 'successful', 'text': ''})
+    return jsonify({'status': 'successful', 'text': ''})
   if 'viewpwd' not in readdb()[index].keys():
     canRead = True
   else:
@@ -79,12 +79,9 @@ def read():
     if hash(pwd) == readdb()[index]['viewpwd']:
       canRead = True
   if canRead:
-    return json.dumps({
-      'status': 'successful',
-      'text': readdb()[index]["text"]
-    })
+    return jsonify({'status': 'successful', 'text': readdb()[index]["text"]})
   else:
-    return json.dumps({
+    return jsonify({
       'status':
       'error',
       'reason':
@@ -98,9 +95,9 @@ def check():
     time.sleep(0.01)
   index = get('index')
   if index not in readdb().keys():
-    return json.dumps({'status': 'successful', 'existing': False})
+    return jsonify({'status': 'successful', 'existing': False})
   else:
-    return json.dumps({
+    return jsonify({
       'status': 'successful',
       'existing': True,
       'viewpwd': 'viewpwd' in readdb()[index].keys(),
@@ -135,11 +132,11 @@ def write():
         db[index]['editpwd'] = hash(get('editpwd'))
     db[index]['text'] = get('text')
     with open('data.json', 'w', encoding='UTF-8') as f:
-      f.write(json.dumps(db))
+      f.write(jsonify(db))
     isWriting = False
-    return json.dumps({'status': 'successful'})
+    return jsonify({'status': 'successful'})
   else:
-    return json.dumps({
+    return jsonify({
       'status':
       'error',
       'reason':
@@ -166,7 +163,7 @@ def exportData():
       download_name=f'{time.strftime("%Y-%m-%d %H %M %S")}.data.json',
       as_attachment=True)
   else:
-    return json.dumps({'status': 'error'})
+    return jsonify({'status': 'error'})
 
 
 if __name__ == '__main__':
