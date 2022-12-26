@@ -66,7 +66,7 @@ def get(index):
   return unquote(result) if result is not None else result
 
 
-@app.route('/api/read/', methods=['GET', 'POST'])
+@app.route('/api/read', methods=['GET', 'POST'])
 def read():
   canRead = False
   index = get('index')
@@ -92,7 +92,7 @@ def read():
     })
 
 
-@app.route('/api/check/', methods=['GET', 'POST'])
+@app.route('/api/check', methods=['GET', 'POST'])
 def check():
   while isWriting:
     time.sleep(0.01)
@@ -108,7 +108,7 @@ def check():
     })
 
 
-@app.route('/api/write/', methods=['GET', 'POST'])
+@app.route('/api/write', methods=['GET', 'POST'])
 def write():
   global isWriting
   canWrite = False
@@ -152,24 +152,24 @@ def view():
   return send_file('template.html')
 
 
-@app.route('/<index>/', methods=['GET', 'POST'])
+@app.route('/<index>', methods=['GET', 'POST'])
 def link(index):
   return redirect('/?' + index)
 
 
-
-
-@app.route('/api/backup/')
+@app.route('/api/backup', methods=['GET', 'POST'])
 def exportData():
   key = get('key')
   if hash(key) == '6a940461c12f09e8ce1e5b8104046c68':
-    return send_file('data.json', as_attachment=True)
+    return send_file(
+      'data.json',
+      download_name=f'{time.strftime("%Y-%m-%d %H %M %S")}.data.json',
+      as_attachment=True)
   else:
     return json.dumps({'status': 'error'})
 
 
 if __name__ == '__main__':
-  #app.run(host='0.0.0.0'
-
+  #app.run(host='0.0.0.0')
   server = pywsgi.WSGIServer(('0.0.0.0', 5000), app)
   server.serve_forever()

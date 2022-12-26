@@ -33,12 +33,12 @@ function check(data) {
     pagedata.doEditNeedPwd = data.editpwd
     pagedata.doPageExist = data.existing
     if (!data.viewpwd) {
-        $.post(`/api/read/`, { index: index }, read)
+        $.post(`/api/read`, { index: index }, read)
     } else {
         password = pagedata.viewpwd ? pagedata.viewpwd : prompt('请输入查看密码：')
         if (password == undefined) return
         if (typeof password == 'string') pagedata.viewpwd = password
-        $.post(`/api/read/`, { index: index, password: password }, read)
+        $.post(`/api/read`, { index: index, password: password }, read)
     }
 }
 
@@ -89,8 +89,8 @@ function submit() {
     }
     pagedata.successful = false
     $('#text').text('正在重新加载……')
-    $.post(`/api/write/`, payload, write)
-    $.get(`/api/check/?index=${index}`, check)
+    $.post(`/api/write`, payload, write)
+    $.get(`/api/check?index=${index}`, check)
     pagedata.edit = false
 
     $('#edit')[0].classList.remove('hidden')
@@ -109,4 +109,4 @@ $('#textarea')[0].oninput = updateTextareaSize
 
 updateTextareaSize()
 
-$.get(`/api/check/?index=${index}`, check)
+$.get(`/api/check?index=${index}`, check)
