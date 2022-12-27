@@ -147,12 +147,25 @@ def write():
 
 @app.route('/', methods=['GET', 'POST'])
 def view():
-  return send_file('template.html')
+  return send_file('index.html')
+
+
+@app.route('/beta', methods=['GET', 'POST'])
+def view_beta():
+  return send_file('beta.html')
 
 
 @app.route('/<index>', methods=['GET', 'POST'])
 def link(index):
-  return redirect('/?' + index)
+  if index == 'favicon.ico':
+    return send_file('/static/textboard-icon-new.svg')
+  else:
+    return redirect('/?' + index)
+
+
+@app.route('/beta/<index>', methods=['GET', 'POST'])
+def link_beta(index):
+  return redirect('/beta?' + index)
 
 
 @app.route('/api/backup', methods=['GET', 'POST'])
