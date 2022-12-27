@@ -21,3 +21,8 @@ button {
 blockquote p {
     margin: 0;
 }
+
+:root {
+    --font-size: 15px;
+    --typography-spacing-vertical: 1rem;
+}
