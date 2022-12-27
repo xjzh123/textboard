@@ -132,7 +132,7 @@ def write():
         db[index]['editpwd'] = hash(get('editpwd'))
     db[index]['text'] = get('text')
     with open('data.json', 'w', encoding='UTF-8') as f:
-      f.write(jsonify(db))
+      f.write(json.dumps(db))
     isWriting = False
     return jsonify({'status': 'successful'})
   else:
