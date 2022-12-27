@@ -35,6 +35,24 @@ md.inline.ruler.enable([
     'sup'
 ]);
 
+
+md.renderer.rules.text = function (tokens, idx) {
+	tokens[idx].content = remarkable.utils.escapeHtml(tokens[idx].content);
+
+	if (tokens[idx].content.indexOf('?') !== -1) {
+		tokens[idx].content = tokens[idx].content.replace(/(^|\s)(\/?\?)\S+?(?=[,.!?:)]?\s|$)/gm, function (match) {
+			var pageLink = remarkable.utils.escapeHtml(remarkable.utils.replaceEntities(match.trim()));
+			var whiteSpace = '';
+			if (match[0] !== '?' && match[0] !== '/') {
+				whiteSpace = match[0];
+			}
+			return whiteSpace + '<a href="' + pageLink.replace(/^\s?\//, '') + '" target="_blank">' + pageLink + '</a>';
+		});
+	}
+
+	return tokens[idx].content;
+};
+
 var pagedata = { doPageExist: undefined, doEditNeedPwd: undefined, doViewNeedPwd: undefined, successful: undefined, viewpwd: undefined, editpwd: undefined }
 
 function read(data) {
