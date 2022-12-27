@@ -17,3 +17,7 @@ textarea {
 button {
     padding: 5px;
 }
+
+blockquote p {
+    padding: 0;
+}
