@@ -11,6 +11,7 @@ from gevent import pywsgi
 
 isWriting = False
 
+VER = 'beta 0.6.8'
 
 def readdb():
   try:
@@ -66,6 +67,7 @@ def get(index):
   result = request.values.get(index)
   return unquote(result) if result is not None else result
 
+# app routes!
 
 @app.route('/api/read', methods=['GET', 'POST'])
 def read():
@@ -145,29 +147,6 @@ def write():
     })
 
 
-@app.route('/', methods=['GET', 'POST'])
-def view():
-  return send_file('index.html')
-
-
-@app.route('/beta', methods=['GET', 'POST'])
-def view_beta():
-  return send_file('beta.html')
-
-
-@app.route('/<index>', methods=['GET', 'POST'])
-def link(index):
-  if index == 'favicon.ico':
-    return send_file('/static/textboard-icon-new.svg')
-  else:
-    return redirect('/?' + index)
-
-
-@app.route('/beta/<index>', methods=['GET', 'POST'])
-def link_beta(index):
-  return redirect('/beta?' + index)
-
-
 @app.route('/api/backup', methods=['GET', 'POST'])
 def exportData():
   key = get('key')
@@ -178,6 +157,34 @@ def exportData():
       as_attachment=True)
   else:
     return jsonify({'status': 'error'})
+
+
+@app.route('/api/ver', methods=['GET', 'POST'])
+def ver():
+  return jsonify({'ver': VER})
+
+
+@app.route('/beta', methods=['GET', 'POST'])
+def view_beta():
+  return send_file('beta.html')
+
+
+@app.route('/', methods=['GET', 'POST'])
+def view():
+  return send_file('index.html')
+
+
+@app.route('/beta/<index>', methods=['GET', 'POST'])
+def link_beta(index):
+  return redirect('/beta?' + index)
+
+
+@app.route('/<index>', methods=['GET', 'POST'])
+def link(index):
+  if index == 'favicon.ico':
+    return send_file('/static/textboard-icon-new.svg')
+  else:
+    return redirect('/?' + index)
 
 
 if __name__ == '__main__':

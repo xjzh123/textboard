@@ -1,0 +1,19 @@
+.hidden {
+    display: none;
+}
+
+textarea {
+    width: 100%;
+    min-height: 22px;
+    max-height: calc(100vh - 250px);
+    font-size: smaller;
+}
+
+#outer {
+    padding: 30px;
+    padding-right: calc(30px + 100% - 100vw);
+}
+
+button {
+    padding: 5px;
+}
