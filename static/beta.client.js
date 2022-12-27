@@ -1,3 +1,6 @@
+document.body.style.setProperty('--font-size', '15px')
+document.body.style.setProperty('--typography-spacing-vertical', '1rem')
+
 var index = location.search.slice(1)
 
 if (index.length > 0) {
