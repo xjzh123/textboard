@@ -4,12 +4,14 @@ import hashlib
 import pathlib
 import random
 import time
-import os
+from os import remove
+from sys import gettrace
 from urllib.parse import unquote
 from gevent import pywsgi
 
 isWriting = False
 
+VER = 'beta 0.6.8'
 
 def readdb():
   try:
@@ -25,7 +27,7 @@ def readdb():
       with open(f'{t}.data.json', 'w', encoding='UTF-8') as f:
         f.write(old2)
       print(f'[DEBUG] Trying to save old data to {t}.data.json...')
-      os.remove('data.json')
+      remove('data.json')
       with open('data.json', 'w', encoding='UTF-8') as f:
         f.write(old2)
       return json.loads(old2)
@@ -65,6 +67,7 @@ def get(index):
   result = request.values.get(index)
   return unquote(result) if result is not None else result
 
+# app routes!
 
 @app.route('/api/read', methods=['GET', 'POST'])
 def read():
@@ -144,16 +147,6 @@ def write():
     })
 
 
-@app.route('/', methods=['GET', 'POST'])
-def view():
-  return send_file('template.html')
-
-
-@app.route('/<index>', methods=['GET', 'POST'])
-def link(index):
-  return redirect('/?' + index)
-
-
 @app.route('/api/backup', methods=['GET', 'POST'])
 def exportData():
   key = get('key')
@@ -166,7 +159,37 @@ def exportData():
     return jsonify({'status': 'error'})
 
 
+@app.route('/api/ver', methods=['GET', 'POST'])
+def ver():
+  return jsonify({'ver': VER})
+
+
+@app.route('/beta', methods=['GET', 'POST'])
+def view_beta():
+  return send_file('beta.html')
+
+
+@app.route('/', methods=['GET', 'POST'])
+def view():
+  return send_file('index.html')
+
+
+@app.route('/beta/<index>', methods=['GET', 'POST'])
+def link_beta(index):
+  return redirect('/beta?' + index)
+
+
+@app.route('/<index>', methods=['GET', 'POST'])
+def link(index):
+  if index == 'favicon.ico':
+    return send_file('/static/textboard-icon-new.svg')
+  else:
+    return redirect('/?' + index)
+
+
 if __name__ == '__main__':
-  #app.run(host='0.0.0.0')
-  server = pywsgi.WSGIServer(('0.0.0.0', 5000), app)
-  server.serve_forever()
+  if gettrace(): # check whether program is running under debug mode
+    app.run(host='0.0.0.0')
+  else:
+    server = pywsgi.WSGIServer(('0.0.0.0', 5000), app)
+    server.serve_forever()

@@ -35,3 +35,5 @@ Can set view password and edit password
 0.6.6：使用WSGI服务器，并且优化CSS、将remarkable.js更换为cdnjs上的最新版。
 
 0.6.7：添加favicon。
+
+0.6.8：添加圣诞节特效；若干优化。
