@@ -4,7 +4,8 @@ import hashlib
 import pathlib
 import random
 import time
-import os
+from os import remove
+from sys import gettrace
 from urllib.parse import unquote
 from gevent import pywsgi
 
@@ -25,7 +26,7 @@ def readdb():
       with open(f'{t}.data.json', 'w', encoding='UTF-8') as f:
         f.write(old2)
       print(f'[DEBUG] Trying to save old data to {t}.data.json...')
-      os.remove('data.json')
+      remove('data.json')
       with open('data.json', 'w', encoding='UTF-8') as f:
         f.write(old2)
       return json.loads(old2)
@@ -167,6 +168,8 @@ def exportData():
 
 
 if __name__ == '__main__':
-  #app.run(host='0.0.0.0')
-  server = pywsgi.WSGIServer(('0.0.0.0', 5000), app)
-  server.serve_forever()
+  if gettrace(): # check whether program is running under debug mode
+    app.run(host='0.0.0.0')
+  else:
+    server = pywsgi.WSGIServer(('0.0.0.0', 5000), app)
+    server.serve_forever()
