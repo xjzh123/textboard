@@ -48,8 +48,6 @@ with open('salt.txt') as f:
   salt = f.read()
   print(f'[DEBUG] salt: {salt}')
 
-print('[DEBUG] WSGI ready')
-
 
 def hash(data: str):
   if data is None:
