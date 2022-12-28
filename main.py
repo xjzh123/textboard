@@ -65,7 +65,7 @@ app = Flask(__name__)
 
 
 def get(index):
-  result = request.values.ggetHashet(index)
+  result = request.values.get(index)
   return unquote(result) if result is not None else result
 
 # app routes!
