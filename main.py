@@ -1,8 +1,6 @@
 from flask import Flask, request, send_file, redirect, jsonify
-import json
 import hashlib
 import pathlib
-import random
 import time
 import secrets
 from sys import gettrace
@@ -40,7 +38,9 @@ def get(index):
   result = request.values.get(index)
   return unquote(result) if result is not None else result
 
+
 # app routes!
+
 
 @app.route('/api/read', methods=['GET', 'POST'])
 def read():
@@ -156,7 +156,7 @@ def link(index):
 
 
 if __name__ == '__main__':
-  if gettrace(): # check whether program is running under debug mode
+  if gettrace():  # check whether program is running under debug mode
     app.run(host='0.0.0.0')
   else:
     server = pywsgi.WSGIServer(('0.0.0.0', 5000), app)

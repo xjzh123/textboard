@@ -127,6 +127,14 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
+name = "pickledb"
+version = "0.9.2"
+description = "A lightweight and simple database using json."
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "pycparser"
 version = "2.21"
 description = "C parser in Python"
@@ -188,7 +196,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "aa7081a82c2ad94bbad7f65ba58e763b0a26b6810481b4571e8baea827474342"
+content-hash = "b77b2d394eb8013409a6d5188e87ae76fc590e360d47553504f2e33a06a17b3f"
 
 [metadata.files]
 cffi = []
@@ -201,6 +209,7 @@ importlib-metadata = []
 itsdangerous = []
 jinja2 = []
 markupsafe = []
+pickledb = []
 pycparser = []
 werkzeug = []
 zipp = []
