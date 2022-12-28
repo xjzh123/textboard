@@ -12,33 +12,7 @@ import pickledb
 
 VER = 'beta 0.6.8'
 
-db = pickledb.load('data.db', False)
-
-# def readdb():
-#   try:
-#     with open('data.json', encoding='UTF-8') as f:
-#       return json.loads(f.read())
-#   except (json.JSONDecodeError, FileNotFoundError):
-#     try:
-#       print('[DEBUG] Json data broken. Trying to repair data...')
-#       with open('data.json', encoding='UTF-8') as f:
-#         old = f.read()
-#         old2 = old[0] + '"' + old[2:]
-#       t = time.strftime('%Y-%m-%d %H %M %S')
-#       with open(f'{t}.data.json', 'w', encoding='UTF-8') as f:
-#         f.write(old2)
-#       print(f'[DEBUG] Trying to save old data to {t}.data.json...')
-#       remove('data.json')
-#       with open('data.json', 'w', encoding='UTF-8') as f:
-#         f.write(old2)
-#       return json.loads(old2)
-#     except:
-#       print('[DEBUG] Json data broken. Resetting data...')
-#       with open('data.json', 'w', encoding='UTF-8') as f:
-#         f.write('{}')
-#       with open('data.json', encoding='UTF-8') as f:
-#         return json.loads(f.read())
-
+db = pickledb.load('data.json', True)
 
 if not pathlib.Path('salt.txt').is_file():
   with open('salt.txt', 'w') as f:
@@ -48,8 +22,6 @@ if not pathlib.Path('salt.txt').is_file():
 with open('salt.txt') as f:
   salt = f.read()
   print(f'[DEBUG] salt: {salt}')
-
-print('[DEBUG] WSGI ready')
 
 
 def getHash(data: str):
@@ -129,6 +101,8 @@ def write():
         newPage['viewpwd'] = getHash(get('viewpwd'))
       if get('editpwd') is not None:
         newPage['editpwd'] = getHash(get('editpwd'))
+    else:
+      newPage = db.get(index)
     newPage['text'] = get('text')
     db.set(index, newPage)
     return jsonify({'status': 'successful'})
