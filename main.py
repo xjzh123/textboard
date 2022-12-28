@@ -10,8 +10,6 @@ from urllib.parse import unquote
 from gevent import pywsgi
 import pickledb
 
-isWriting = False
-
 VER = 'beta 0.6.8'
 
 db = pickledb.load('data.db', False)
@@ -54,7 +52,7 @@ with open('salt.txt') as f:
 print('[DEBUG] WSGI ready')
 
 
-def hash(data: str):
+def getHash(data: str):
   if data is None:
     return
   obj = hashlib.md5(salt.encode('utf-8'))
@@ -67,7 +65,7 @@ app = Flask(__name__)
 
 
 def get(index):
-  result = request.values.get(index)
+  result = request.values.ggetHashet(index)
   return unquote(result) if result is not None else result
 
 # app routes!
@@ -76,16 +74,16 @@ def get(index):
 def read():
   canRead = False
   index = get('index')
-  if index not in readdb().keys():
+  if index not in db.getall():
     return jsonify({'status': 'successful', 'text': ''})
-  if 'viewpwd' not in readdb()[index].keys():
+  if 'viewpwd' not in db.get(index).keys():
     canRead = True
   else:
     pwd = get('password')
-    if hash(pwd) == readdb()[index]['viewpwd']:
+    if getHash(pwd) == db.get(index)['viewpwd']:
       canRead = True
   if canRead:
-    return jsonify({'status': 'successful', 'text': readdb()[index]["text"]})
+    return jsonify({'status': 'successful', 'text': db.get(index)["text"]})
   else:
     return jsonify({
       'status':
@@ -97,49 +95,42 @@ def read():
 
 @app.route('/api/check', methods=['GET', 'POST'])
 def check():
-  while isWriting:
-    time.sleep(0.01)
   index = get('index')
-  if index not in readdb().keys():
+  if index not in db.getall():
     return jsonify({'status': 'successful', 'existing': False})
   else:
     return jsonify({
       'status': 'successful',
       'existing': True,
-      'viewpwd': 'viewpwd' in readdb()[index].keys(),
-      'editpwd': 'editpwd' in readdb()[index].keys()
+      'viewpwd': 'viewpwd' in db.get(index).keys(),
+      'editpwd': 'editpwd' in db.get(index).keys()
     })
 
 
 @app.route('/api/write', methods=['GET', 'POST'])
 def write():
-  global isWriting
   canWrite = False
   shouldCreate = False
   index = get('index')
-  if index not in readdb().keys():
+  if index not in db.getall():
     canWrite = True
     shouldCreate = True
   else:
-    if 'editpwd' not in readdb()[index].keys():
+    if 'editpwd' not in db.get(index).keys():
       canWrite = True
     else:
       pwd = get('password')
-      if hash(pwd) == readdb()[index]['editpwd']:
+      if getHash(pwd) == db.get(index)['editpwd']:
         canWrite = True
   if canWrite:
-    isWriting = True
-    db = readdb()
     if shouldCreate:
-      db[index] = {}
+      newPage = {}
       if get('viewpwd') is not None:
-        db[index]['viewpwd'] = hash(get('viewpwd'))
+        newPage['viewpwd'] = getHash(get('viewpwd'))
       if get('editpwd') is not None:
-        db[index]['editpwd'] = hash(get('editpwd'))
-    db[index]['text'] = get('text')
-    with open('data.json', 'w', encoding='UTF-8') as f:
-      f.write(json.dumps(db))
-    isWriting = False
+        newPage['editpwd'] = getHash(get('editpwd'))
+    newPage['text'] = get('text')
+    db.set(index, newPage)
     return jsonify({'status': 'successful'})
   else:
     return jsonify({
@@ -153,7 +144,7 @@ def write():
 @app.route('/api/backup', methods=['GET', 'POST'])
 def exportData():
   key = get('key')
-  if hash(key) == '6a940461c12f09e8ce1e5b8104046c68':
+  if getHash(key) == '6a940461c12f09e8ce1e5b8104046c68':
     return send_file(
       'data.json',
       download_name=f'{time.strftime("%Y-%m-%d %H %M %S")}.data.json',

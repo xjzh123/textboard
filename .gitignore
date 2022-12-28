@@ -139,9 +139,7 @@ cython_debug/
 
 # Project data
 salt.txt
-data.json
-*.data.json
-data.old
+data.db
 
 # Hint config
 .hintrc
