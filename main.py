@@ -4,44 +4,47 @@ import hashlib
 import pathlib
 import random
 import time
-from os import remove
+import secrets
 from sys import gettrace
 from urllib.parse import unquote
 from gevent import pywsgi
+import pickledb
 
 isWriting = False
 
 VER = 'beta 0.6.8'
 
-def readdb():
-  try:
-    with open('data.json', encoding='UTF-8') as f:
-      return json.loads(f.read())
-  except (json.JSONDecodeError, FileNotFoundError):
-    try:
-      print('[DEBUG] Json data broken. Trying to repair data...')
-      with open('data.json', encoding='UTF-8') as f:
-        old = f.read()
-        old2 = old[0] + '"' + old[2:]
-      t = time.strftime('%Y-%m-%d %H %M %S')
-      with open(f'{t}.data.json', 'w', encoding='UTF-8') as f:
-        f.write(old2)
-      print(f'[DEBUG] Trying to save old data to {t}.data.json...')
-      remove('data.json')
-      with open('data.json', 'w', encoding='UTF-8') as f:
-        f.write(old2)
-      return json.loads(old2)
-    except:
-      print('[DEBUG] Json data broken. Resetting data...')
-      with open('data.json', 'w', encoding='UTF-8') as f:
-        f.write('{}')
-      with open('data.json', encoding='UTF-8') as f:
-        return json.loads(f.read())
+db = pickledb.load('data.db', False)
+
+# def readdb():
+#   try:
+#     with open('data.json', encoding='UTF-8') as f:
+#       return json.loads(f.read())
+#   except (json.JSONDecodeError, FileNotFoundError):
+#     try:
+#       print('[DEBUG] Json data broken. Trying to repair data...')
+#       with open('data.json', encoding='UTF-8') as f:
+#         old = f.read()
+#         old2 = old[0] + '"' + old[2:]
+#       t = time.strftime('%Y-%m-%d %H %M %S')
+#       with open(f'{t}.data.json', 'w', encoding='UTF-8') as f:
+#         f.write(old2)
+#       print(f'[DEBUG] Trying to save old data to {t}.data.json...')
+#       remove('data.json')
+#       with open('data.json', 'w', encoding='UTF-8') as f:
+#         f.write(old2)
+#       return json.loads(old2)
+#     except:
+#       print('[DEBUG] Json data broken. Resetting data...')
+#       with open('data.json', 'w', encoding='UTF-8') as f:
+#         f.write('{}')
+#       with open('data.json', encoding='UTF-8') as f:
+#         return json.loads(f.read())
 
 
 if not pathlib.Path('salt.txt').is_file():
   with open('salt.txt', 'w') as f:
-    f.write(str(random.random() * 114514))
+    f.write(secrets.token_hex())
     print('[DEBUG] new salt generated and saved in salt.txt')
 
 with open('salt.txt') as f:
@@ -164,19 +167,9 @@ def ver():
   return jsonify({'ver': VER})
 
 
-@app.route('/beta', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def view_beta():
   return send_file('beta.html')
-
-
-@app.route('/', methods=['GET', 'POST'])
-def view():
-  return send_file('index.html')
-
-
-@app.route('/beta/<index>', methods=['GET', 'POST'])
-def link_beta(index):
-  return redirect('/beta?' + index)
 
 
 @app.route('/<index>', methods=['GET', 'POST'])
