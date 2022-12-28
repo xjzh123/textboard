@@ -30,3 +30,12 @@ blockquote p {
 #text {
     overflow-wrap: anywhere;
 }
+
+#button-manage {
+    width: 70px;
+    margin-left: 10px;
+}
+
+#header {
+    display: flex;
+}
