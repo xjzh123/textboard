@@ -10,7 +10,7 @@ from urllib.parse import unquote
 from gevent import pywsgi
 import pickledb
 
-VER = 'beta 0.6.8'
+VER = 'beta 0.7'
 
 db = pickledb.load('data.json', True)
 
@@ -47,16 +47,16 @@ def getReqPara(index):
 def read():
     canRead = False
     index = getReqPara('index')
+    page = db.get(index)
     if index not in db.getall():
         return jsonify({'status': 'successful', 'text': ''})
-    if 'viewpwd' not in db.get(index).keys():
+
+    if 'viewpwd' not in page.keys():
         canRead = True
     else:
-        pwd = getReqPara('password')
-        if getHash(pwd) == db.get(index)['viewpwd']:
-            canRead = True
+        canRead = getHash(getReqPara('password')) == page['viewpwd']
     if canRead:
-        return jsonify({'status': 'successful', 'text': db.get(index)["text"]})
+        return jsonify({'status': 'successful', 'text': page["text"]})
     else:
         return jsonify({
             'status':
@@ -69,14 +69,16 @@ def read():
 @app.route('/api/check', methods=['GET', 'POST'])
 def check():
     index = getReqPara('index')
+    page = db.get(index)
     if index not in db.getall():
         return jsonify({'status': 'successful', 'existing': False})
     else:
         return jsonify({
             'status': 'successful',
             'existing': True,
-            'viewpwd': 'viewpwd' in db.get(index).keys(),
-            'editpwd': 'editpwd' in db.get(index).keys()
+            'viewpwd': 'viewpwd' in page.keys(),
+            'editpwd': 'editpwd' in page.keys(),
+            'masterpwd': 'masterpwd' in page.keys()
         })
 
 
@@ -85,25 +87,29 @@ def write():
     canWrite = False
     shouldCreate = False
     index = getReqPara('index')
+    page = db.get(index)
     if index not in db.getall():
         canWrite = True
         shouldCreate = True
     else:
-        if 'editpwd' not in db.get(index).keys():
-            canWrite = True
-        else:
-            pwd = getReqPara('password')
-            if getHash(pwd) == db.get(index)['editpwd']:
+        if 'editpwd' not in page.keys():
+            if 'viewpwd' in page.keys():
+                canWrite = getHash(getReqPara('viewpwd')) == db.get()
+            else:
                 canWrite = True
+        else:
+            canWrite = getHash(getReqPara('password')) == page['editpwd']
     if canWrite:
-        if shouldCreate:
+        if shouldCreate: # 我在客户端角度思考问题，这样很繁琐，不便于扩展。应该从服务端角度思考问题，先设置一个页面（创建这一步放在设置里）再让客户端传递内容过来，这样这个函数就不需要搞这么多花里胡哨的
             newPage = {}
             if getReqPara('viewpwd') is not None:
                 newPage['viewpwd'] = getHash(getReqPara('viewpwd'))
             if getReqPara('editpwd') is not None:
                 newPage['editpwd'] = getHash(getReqPara('editpwd'))
+            if getReqPara('masterpwd') is not None:
+                newPage['masterpwd'] = getHash(getReqPara('masterpwd'))
         else:
-            newPage = db.get(index)
+            newPage = page
         newPage['text'] = getReqPara('text')
         db.set(index, newPage)
         return jsonify({'status': 'successful'})
@@ -113,6 +119,42 @@ def write():
             'error',
             'reason':
             'wrong password or password not provided, permission denied'
+        })
+
+
+@app.route('/api/manage', methods=['GET', 'POST'])
+def manage():
+    canManage = False
+    index = getReqPara('index')
+    page = db.get(index)
+    if index not in db.getall():
+        return jsonify({
+            'status':
+            'error',
+            'reason':
+            'page not found'
+        })
+    canManage = getHash(getReqPara('password')) == page['managepwd']
+    if canManage:
+        newPage = page
+        if getReqPara('newviewpwd') is not None:
+            newPage['viewpwd'] = getHash(getReqPara('newviewpwd'))
+        else:
+            if 'viewpwd' in newPage.keys():
+                del newPage['viewpwd']
+        if getReqPara('neweditpwd') is not None:
+            newPage['editpwd'] = getHash(getReqPara('neweditpwd'))
+        else:
+            if 'editpwd' in newPage.keys():
+                del newPage['editpwd']
+        db.set(index, newPage)
+        return jsonify({'status': 'successful'})
+    else:
+        return jsonify({
+            'status':
+            'error',
+            'reason':
+            'wrong password or password not provided, permission denied!!!'
         })
 
 

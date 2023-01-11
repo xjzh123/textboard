@@ -1,15 +1,4 @@
-
-date = new Date
-if (date.getDate() == 25 && date.getMonth() + 1 == 12) {
-    let link = document.createElement('link')
-    link.href = '/static/christmas.css'
-    link.rel = 'stylesheet'
-    link.type = 'text/css'
-    document.head.appendChild(link)
-
-    snowFlakes = document.createElement('div')
-    snowFlakes.classList.add('snowflakes')
-    snowFlakes.innerHTML = `
+const CHRISTMAS_HTML = `\
 <div class="snowflake">
     <p><span style="font-size:120%;">🎄</span><br></p>
 </div>
@@ -45,7 +34,19 @@ if (date.getDate() == 25 && date.getMonth() + 1 == 12) {
 </div>
 <div class="snowflake">
     <p><span style="font-size:95%;">🎄</span><br></p>
-</div>
-`
+</div>`
+
+function addSnowflake() {
+    let link = document.createElement('link')
+    link.href = '/static/christmas.css'
+    link.rel = 'stylesheet'
+    link.type = 'text/css'
+    document.head.appendChild(link)
+
+    let snowFlakes = document.createElement('div')
+    snowFlakes.classList.add('snowflakes')
+    snowFlakes.innerHTML = CHRISTMAS_HTML
     document.body.appendChild(snowFlakes)
 }
+
+export default { addSnowflake }

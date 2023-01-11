@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 
 <head>
     <meta charset="UTF-8">
@@ -17,7 +17,7 @@
             <header id="header">
                 <button type="button" onclick="edit()" id="edit">编辑</button>
                 <button type="button" onclick="submit()" id="submit" class="hidden">提交</button>
-                <button id="button-manage" class="secondary">管理</button>
+                <button type="button" onclick="manage()"  id="manage" class="secondary hidden">管理</button>
             </header>
             <hr>
 
@@ -36,10 +36,8 @@
 
     <script src="https://code.jquery.com/jquery-3.6.2.min.js"
         integrity="sha256-2krYZKh//PcchRtd+H+VyyQoZ/e3EcrkxhM8ycwASPA=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/2.0.1/remarkable.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
-    <script src="/static/beta.client.js"></script>
-    <script src="/static/misc.js"></script>
+    <script type="module" src="/static/beta.client.js"></script>
+    <script type="module" src="/static/misc.js"></script>
 </body>
 
 </html>
