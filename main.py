@@ -1,8 +1,6 @@
 from flask import Flask, request, send_file, redirect, jsonify
-import json
 import hashlib
 import pathlib
-import random
 import time
 import secrets
 from sys import gettrace
@@ -37,8 +35,11 @@ app = Flask(__name__)
 
 
 def getReqPara(index):
-    result = request.values.get(index)
-    return unquote(result) if result is not None else result
+    if request.method == 'POST' and request.content_type == 'application/json':
+        return request.get_json().get(index)
+    else:
+        result = request.values.get(index)
+        return unquote(result) if result is not None else result
 
 # app routes!
 

@@ -1,3 +1,7 @@
+:root {
+    cursor: unset;
+}
+
 .hidden {
     display: none;
 }
