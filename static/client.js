@@ -127,6 +127,8 @@ locals.pwd = cookie.get(`password-${index}`) ?
 
 
 async function fetchPage() {
+    hideEditor()
+    
     await updatePageInfo({ index })
 
     modifyPage()
@@ -136,7 +138,6 @@ async function fetchPage() {
         return false
     }
 
-    hideEditor()
     await loadContent({ index, password })
     scrollToAnchor()
 }
