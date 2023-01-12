@@ -37,3 +37,5 @@ Can set view password and edit password
 0.6.7：添加favicon。
 
 0.6.8：添加圣诞节特效；若干优化。
+
+1.0：重写客户端JS，优化代码逻辑；删除旧客户端；增加管理密码，创建时设置了管理密码的页面可以被修改密码。
