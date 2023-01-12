@@ -10,20 +10,20 @@ import pickledb
 from functools import wraps
 import logging
 
-VER = 'beta 0.7'
-
 logging.basicConfig(level=logging.DEBUG)
+
+VER = 'beta 0.7'
 
 db = pickledb.load('data.json', True)
 
 if not pathlib.Path('salt.txt').is_file():
     with open('salt.txt', 'w') as f:
         f.write(secrets.token_hex())
-        print('[DEBUG] new salt generated and saved in salt.txt')
+        logging.info('New salt generated and saved in salt.txt')
 
 with open('salt.txt') as f:
     salt = f.read()
-    print(f'[DEBUG] salt: {salt}')
+    logging.info(f'Salt: {salt}')
 
 
 def getHash(data: str):
@@ -196,24 +196,36 @@ def ver():
     return jsonify({'ver': VER})
 
 
+@app.route('/beta', defaults={'index': ''})
+@app.route('/beta/<index>')
+@logger
+def noBeta(index):
+    return redirect(('/?' + (index if index else request.query_string.decode())).rstrip('?'))
+
+
 @app.route('/', methods=['GET', 'POST'])
 @logger
 def view():
     return send_file('index.html')
 
 
+@app.route('/favicon.ico')
+@logger
+def favicon():
+    return send_file('/static/textboard-icon-new.svg')
+
+
 @app.route('/<index>', methods=['GET', 'POST'])
 @logger
 def link(index):
-    if index == 'favicon.ico':
-        return send_file('/static/textboard-icon-new.svg')
-    else:
-        return redirect('/?' + index)
+    return redirect('/?' + index)
 
 
 if __name__ == '__main__':
     if gettrace():  # check whether program is running under debug mode
         app.run(host='0.0.0.0')
     else:
+        logging.basicConfig(level=logging.INFO)
+        app.logger.info('Server Ready')
         server = pywsgi.WSGIServer(('0.0.0.0', 5000), app)
         server.serve_forever()
