@@ -7,8 +7,12 @@ from sys import gettrace
 from urllib.parse import unquote
 from gevent import pywsgi
 import pickledb
+from functools import wraps
+import logging
 
 VER = 'beta 0.7'
+
+logging.basicConfig(level=logging.DEBUG)
 
 db = pickledb.load('data.json', True)
 
@@ -36,15 +40,33 @@ app = Flask(__name__)
 
 def getReqPara(index):
     if request.method == 'POST' and request.content_type == 'application/json':
-        return request.get_json().get(index)
+        result = request.json.get(index)
     else:
         result = request.values.get(index)
-        return unquote(result) if result is not None else result
 
-# app routes!
+    return unquote(result) if result is not None else result
+
+
+def logger(func):
+    @wraps(func)
+    def decorated(*args, **kwargs):
+        app.logger.debug(
+            'parameters: ' +
+            str(
+                request.json
+                if request.method == 'POST' and request.content_type == 'application/json'
+                else request.values
+            )
+        )
+        res = func(*args, **kwargs)
+        if res.content_type == 'application/json':
+            app.logger.debug('returns: ' + str(res.data))
+        return res
+    return decorated
 
 
 @app.route('/api/read', methods=['GET', 'POST'])
+@logger
 def read():
     canRead = False
     index = getReqPara('index')
@@ -52,8 +74,8 @@ def read():
     if index not in db.getall():
         return jsonify({'status': 'successful', 'text': ''})
 
-    canRead = getHash(getReqPara('password')
-                      ) == page['viewpwd'] if 'viewpwd' in page else True
+    canRead = (getHash(getReqPara('password')) == page['viewpwd']
+               if 'viewpwd' in page else True)
 
     if canRead:
         return jsonify({'status': 'successful', 'text': page["text"]})
@@ -62,6 +84,7 @@ def read():
 
 
 @app.route('/api/check', methods=['GET', 'POST'])
+@logger
 def check():
     index = getReqPara('index')
     page = db.get(index)
@@ -72,6 +95,7 @@ def check():
 
 
 @app.route('/api/write', methods=['GET', 'POST'])
+@logger
 def write():
     index = getReqPara('index')
     page = db.get(index)
@@ -96,6 +120,7 @@ def write():
 
 
 @app.route('/api/create', methods=['GET', 'POST'])
+@logger
 def create():
     index = getReqPara('index')
     page = db.get(index)
@@ -104,32 +129,40 @@ def create():
 
     page = {'text': ''}
 
+    if getReqPara('setviewpwd') is not None:
+        page['viewpwd'] = getHash(getReqPara('setviewpwd'))
+
+    if getReqPara('seteditpwd') is not None:
+        page['editpwd'] = getHash(getReqPara('seteditpwd'))
+
     if getReqPara('setmanagepwd') is not None:
         page['managepwd'] = getHash(getReqPara('setmanagepwd'))
-    
+
     db.set(index, page)
     return jsonify({'status': 'successful'})
 
 
 @app.route('/api/manage', methods=['GET', 'POST'])
+@logger
 def manage():
     index = getReqPara('index')
     page = db.get(index)
     if index not in db.getall():
         return jsonify({'status': 'error', 'reason': 'page not found'})
 
-    canManage = getHash(getReqPara('password')) == page['managepwd'] if 'managepwd' in page else False
+    canManage = getHash(getReqPara('password')
+                        ) == page['managepwd'] if 'managepwd' in page else False
     if not canManage:
-        return jsonify({'status': 'error', 'reason': 'wrong password or password not provided, permission denied!!!'})
+        return jsonify({'status': 'error', 'reason': 'wrong password or password not provided, permission denied'})
 
     newPage = page
     if getReqPara('setviewpwd') is not None:
-        newPage['viewpwd'] = getHash(getReqPara('newviewpwd'))
+        newPage['viewpwd'] = getHash(getReqPara('setviewpwd'))
     else:
         if 'viewpwd' in newPage.keys():
             del newPage['viewpwd']
     if getReqPara('seteditpwd') is not None:
-        newPage['editpwd'] = getHash(getReqPara('neweditpwd'))
+        newPage['editpwd'] = getHash(getReqPara('seteditpwd'))
     else:
         if 'editpwd' in newPage.keys():
             del newPage['editpwd']
@@ -138,6 +171,7 @@ def manage():
 
 
 @app.route('/api/backup', methods=['GET', 'POST'])
+@logger
 def exportData():
     key = getReqPara('key')
     if getHash(key) == '6a940461c12f09e8ce1e5b8104046c68':
@@ -148,17 +182,21 @@ def exportData():
     else:
         return jsonify({'status': 'error'})
 
+
 @app.route('/api/ver', methods=['GET', 'POST'])
+@logger
 def ver():
     return jsonify({'ver': VER})
 
 
 @app.route('/', methods=['GET', 'POST'])
+@logger
 def view_beta():
     return send_file('beta.html')
 
 
 @app.route('/<index>', methods=['GET', 'POST'])
+@logger
 def link(index):
     if index == 'favicon.ico':
         return send_file('/static/textboard-icon-new.svg')
