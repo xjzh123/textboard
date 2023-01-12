@@ -117,6 +117,8 @@ locals.pwd = cookie.get(`password-${index}`) ?
 async function fetchPage() {
     await updatePageInfo({ index })
 
+    modifyPage()
+
     let password = accessPassword('viewpwd')
     if (password === false) {
         return false
@@ -130,6 +132,14 @@ async function updatePageInfo(payload = { index }) {
     await fetch(`/api/check?index=${payload.index}`).then(res => res.json()).then((data) => {
         locals.page = { ...locals.page, ...data } // 用展开运算符合并对象
     })
+}
+
+function modifyPage() {
+    $('#edit').innerHTML = locals.page.existing ? '编辑' : '创建'
+
+    if (locals.page.managepwd) {
+        $('#manage').classList.remove('hidden')
+    }
 }
 
 async function loadContent(payload) {
@@ -200,25 +210,27 @@ function accessPassword(name, promptText) {
     let password = locals.page[name] ? locals.pwd[name] : null
     // 没有历史密码就要求输入
     if (password === undefined) {
-        if (promptText === undefined) {
-            let nameToText = {
-                'viewpwd': '查看',
-                'editpwd': '编辑',
-            }
-            promptText = (name in nameToText) ?
-                `请输入${nameToText[name]}密码：` : '请输入密码：'
-        }
-        password = prompt(promptText)
-        if (typeof password != 'string') {
-            return false
-        }
-        // 记录历史密码
-        locals.pwd[name] = password
-        cookie.set(`password-${index}`, JSON.stringify(locals.pwd), {
-            path: location.pathname
-        })
+        password = askPassword(name, promptText)
     }
     return password
+}
+
+function askPassword(name, promptText) {
+    if (promptText === undefined) {
+        let nameToText = {
+            'viewpwd': '查看',
+            'editpwd': '编辑',
+        }
+        promptText = (name in nameToText) ?
+            `请输入${nameToText[name]}密码：` : '请输入密码：'
+    }
+    let password = prompt(promptText)
+    if (typeof password != 'string') {
+        return false
+    }
+    // 记录历史密码
+    locals.pwd[name] = password
+    cookie.set(`password-${index}`, JSON.stringify(locals.pwd))
 }
 
 

@@ -33,7 +33,10 @@ blockquote p {
 }
 
 #text {
-    overflow-wrap: anywhere;
+    -moz-overflow-wrap: anywhere;
+    -webkit-overflow-wrap: anywhere;
+    -o-overflow-wrap: anywhere;
+    overflow-wrap: break-word;
 }
 
 #manage {

@@ -52,19 +52,13 @@ def read():
     if index not in db.getall():
         return jsonify({'status': 'successful', 'text': ''})
 
-    if 'viewpwd' not in page.keys():
-        canRead = True
-    else:
-        canRead = getHash(getReqPara('password')) == page['viewpwd']
+    canRead = getHash(getReqPara('password')
+                      ) == page['viewpwd'] if 'viewpwd' in page else True
+
     if canRead:
         return jsonify({'status': 'successful', 'text': page["text"]})
     else:
-        return jsonify({
-            'status':
-            'error',
-            'reason':
-            'wrong password or password not provided, permission denied'
-        })
+        return jsonify({'status': 'error', 'reason': 'wrong password or password not provided, permission denied'})
 
 
 @app.route('/api/check', methods=['GET', 'POST'])
@@ -74,89 +68,73 @@ def check():
     if index not in db.getall():
         return jsonify({'status': 'successful', 'existing': False})
     else:
-        return jsonify({
-            'status': 'successful',
-            'existing': True,
-            'viewpwd': 'viewpwd' in page.keys(),
-            'editpwd': 'editpwd' in page.keys(),
-            'masterpwd': 'masterpwd' in page.keys()
-        })
+        return jsonify({'status': 'successful', 'existing': True, 'viewpwd': 'viewpwd' in page, 'editpwd': 'editpwd' in page, 'managepwd': 'managepwd' in page})
 
 
 @app.route('/api/write', methods=['GET', 'POST'])
 def write():
-    canWrite = False
-    shouldCreate = False
     index = getReqPara('index')
     page = db.get(index)
     if index not in db.getall():
-        canWrite = True
-        shouldCreate = True
-    else:
-        if 'editpwd' not in page.keys():
-            if 'viewpwd' in page.keys():
-                canWrite = getHash(getReqPara('viewpwd')) == db.get()
-            else:
-                canWrite = True
-        else:
-            canWrite = getHash(getReqPara('password')) == page['editpwd']
-    if canWrite:
-        if shouldCreate: # 我在客户端角度思考问题，这样很繁琐，不便于扩展。应该从服务端角度思考问题，先设置一个页面（创建这一步放在设置里）再让客户端传递内容过来，这样这个函数就不需要搞这么多花里胡哨的
-            newPage = {}
-            if getReqPara('viewpwd') is not None:
-                newPage['viewpwd'] = getHash(getReqPara('viewpwd'))
-            if getReqPara('editpwd') is not None:
-                newPage['editpwd'] = getHash(getReqPara('editpwd'))
-            if getReqPara('masterpwd') is not None:
-                newPage['masterpwd'] = getHash(getReqPara('masterpwd'))
-        else:
-            newPage = page
-        newPage['text'] = getReqPara('text')
-        db.set(index, newPage)
-        return jsonify({'status': 'successful'})
-    else:
-        return jsonify({
-            'status':
-            'error',
-            'reason':
-            'wrong password or password not provided, permission denied'
-        })
+        return jsonify({'status': 'error', 'reason': 'page not found. please create first.'})
+
+    canWrite = (
+        getHash(getReqPara('password')) == page['editpwd'] if 'editpwd' in page
+        else (
+            getHash(getReqPara('password')) == page['viewpwd'] if 'viewpwd' in page
+            else True
+        )
+    )
+
+    if not canWrite:
+        return jsonify({'status': 'error', 'reason': 'wrong password or password not provided, permission denied'})
+
+    newPage = page
+    newPage['text'] = getReqPara('text')
+    db.set(index, newPage)
+    return jsonify({'status': 'successful'})
+
+
+@app.route('/api/create', methods=['GET', 'POST'])
+def create():
+    index = getReqPara('index')
+    page = db.get(index)
+    if index in db.getall():
+        return jsonify({'status': 'error', 'reason': 'page already exists'})
+
+    page = {'text': ''}
+
+    if getReqPara('setmanagepwd') is not None:
+        page['managepwd'] = getHash(getReqPara('setmanagepwd'))
+    
+    db.set(index, page)
+    return jsonify({'status': 'successful'})
 
 
 @app.route('/api/manage', methods=['GET', 'POST'])
 def manage():
-    canManage = False
     index = getReqPara('index')
     page = db.get(index)
     if index not in db.getall():
-        return jsonify({
-            'status':
-            'error',
-            'reason':
-            'page not found'
-        })
-    canManage = getHash(getReqPara('password')) == page['managepwd']
-    if canManage:
-        newPage = page
-        if getReqPara('newviewpwd') is not None:
-            newPage['viewpwd'] = getHash(getReqPara('newviewpwd'))
-        else:
-            if 'viewpwd' in newPage.keys():
-                del newPage['viewpwd']
-        if getReqPara('neweditpwd') is not None:
-            newPage['editpwd'] = getHash(getReqPara('neweditpwd'))
-        else:
-            if 'editpwd' in newPage.keys():
-                del newPage['editpwd']
-        db.set(index, newPage)
-        return jsonify({'status': 'successful'})
+        return jsonify({'status': 'error', 'reason': 'page not found'})
+
+    canManage = getHash(getReqPara('password')) == page['managepwd'] if 'managepwd' in page else False
+    if not canManage:
+        return jsonify({'status': 'error', 'reason': 'wrong password or password not provided, permission denied!!!'})
+
+    newPage = page
+    if getReqPara('setviewpwd') is not None:
+        newPage['viewpwd'] = getHash(getReqPara('newviewpwd'))
     else:
-        return jsonify({
-            'status':
-            'error',
-            'reason':
-            'wrong password or password not provided, permission denied!!!'
-        })
+        if 'viewpwd' in newPage.keys():
+            del newPage['viewpwd']
+    if getReqPara('seteditpwd') is not None:
+        newPage['editpwd'] = getHash(getReqPara('neweditpwd'))
+    else:
+        if 'editpwd' in newPage.keys():
+            del newPage['editpwd']
+    db.set(index, newPage)
+    return jsonify({'status': 'successful'})
 
 
 @app.route('/api/backup', methods=['GET', 'POST'])
@@ -169,7 +147,6 @@ def exportData():
             as_attachment=True)
     else:
         return jsonify({'status': 'error'})
-
 
 @app.route('/api/ver', methods=['GET', 'POST'])
 def ver():
