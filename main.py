@@ -65,7 +65,6 @@ def logger(func):
     return decorated
 
 
-
 @app.route('/api/read', methods=['GET', 'POST'])
 @logger
 def read():
@@ -214,16 +213,6 @@ def view():
 @logger
 def favicon():
     return send_file('/static/textboard-icon-new.svg')
-
-
-@app.route('/', methods=['GET', 'POST'])
-def view():
-  return send_file('index.html')
-
-
-@app.route('/beta/<index>', methods=['GET', 'POST'])
-def link_beta(index):
-  return redirect('/beta?' + index)
 
 
 @app.route('/<index>', methods=['GET', 'POST'])
