@@ -136,6 +136,7 @@ async function fetchPage() {
         return false
     }
 
+    hideEditor()
     await loadContent({ index, password })
     scrollToAnchor()
 }
