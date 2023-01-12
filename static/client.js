@@ -66,7 +66,7 @@ md.renderer.rules.text = function (tokens, idx) {
             if (match[0] !== '?' && match[0] !== '/') {
                 whiteSpace = match[0];
             }
-            return whiteSpace + '<a href="' + pageLink.replace(/^\s?\//, '') + '" target="_blank">' + pageLink + '</a>';
+            return whiteSpace + '<a href="' + pageLink.replace(/^\s?\//, '') + '" target="_blank" rel="noopener">' + pageLink + '</a>';
         });
     }
 
