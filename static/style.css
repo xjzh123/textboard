@@ -23,6 +23,10 @@ button {
     padding: 5px;
 }
 
+code {
+    max-width: 100%;
+}
+
 blockquote p {
     margin: 0;
 }
@@ -33,9 +37,6 @@ blockquote p {
 }
 
 #text {
-    -moz-overflow-wrap: anywhere;
-    -webkit-overflow-wrap: anywhere;
-    -o-overflow-wrap: anywhere;
     overflow-wrap: break-word;
 }
 
