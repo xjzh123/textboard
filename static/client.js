@@ -127,8 +127,6 @@ locals.pwd = cookie.get(`password-${index}`) ?
 
 
 async function fetchPage() {
-    hideEditor()
-    
     await updatePageInfo({ index })
 
     modifyPage()
@@ -219,9 +217,11 @@ async function createNew() {
     if (setviewpwd === false || seteditpwd === false || setmanagepwd === false) {
         return false
     }
+    
 
     locals.loadSuccessful = false
-    $('#text').textContent = '正在提交……'
+    showContent('正在提交……')
+    hideEditor()
 
     await submitCreate({ index, setviewpwd, seteditpwd, setmanagepwd })
 
@@ -247,7 +247,8 @@ async function saveEdit() {
     }
 
     locals.loadSuccessful = false
-    $('#text').textContent = '正在提交……'
+    showContent('正在提交……')
+    hideEditor()
 
     await submitEdit({ index, password, text: $('#textarea').value })
 }
