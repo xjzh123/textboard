@@ -127,15 +127,19 @@ def create():
     if index in db.getall():
         return jsonify({'status': 'error', 'reason': 'page already exists'})
 
+    if None in (getReqPara('setviewpwd'), getReqPara('seteditpwd'), getReqPara('setmanagepwd')):
+        return jsonify({'status': 'error', 'reason': 'password not set'})
+
     page = {'text': ''}
 
-    if getReqPara('setviewpwd') is not None:
+    # 在读取的时候可以传None意思是不需要密码，但是创建的时候不应该None。
+    if getReqPara('setviewpwd') != '':
         page['viewpwd'] = getHash(getReqPara('setviewpwd'))
 
-    if getReqPara('seteditpwd') is not None:
+    if getReqPara('seteditpwd') != '':
         page['editpwd'] = getHash(getReqPara('seteditpwd'))
 
-    if getReqPara('setmanagepwd') is not None:
+    if getReqPara('setmanagepwd') != '':
         page['managepwd'] = getHash(getReqPara('setmanagepwd'))
 
     db.set(index, page)
@@ -155,13 +159,16 @@ def manage():
     if not canManage:
         return jsonify({'status': 'error', 'reason': 'wrong password or password not provided, permission denied'})
 
+    if None in (getReqPara('setviewpwd'), getReqPara('seteditpwd')):
+        return jsonify({'status': 'error', 'reason': 'password not set'})
+
     newPage = page
-    if getReqPara('setviewpwd') is not None:
+    if getReqPara('setviewpwd') != '':
         newPage['viewpwd'] = getHash(getReqPara('setviewpwd'))
     else:
         if 'viewpwd' in newPage.keys():
             del newPage['viewpwd']
-    if getReqPara('seteditpwd') is not None:
+    if getReqPara('seteditpwd') != '':
         newPage['editpwd'] = getHash(getReqPara('seteditpwd'))
     else:
         if 'editpwd' in newPage.keys():
@@ -191,8 +198,8 @@ def ver():
 
 @app.route('/', methods=['GET', 'POST'])
 @logger
-def view_beta():
-    return send_file('beta.html')
+def view():
+    return send_file('index.html')
 
 
 @app.route('/<index>', methods=['GET', 'POST'])
