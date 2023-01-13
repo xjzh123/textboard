@@ -210,9 +210,9 @@ async function savePage() {
 }
 
 async function createNew() {
-    let setviewpwd = askPassword('viewpwd')
-    let seteditpwd = askPassword('editpwd')
-    let setmanagepwd = askPassword('managepwd')
+    let setviewpwd = askPassword('viewpwd', { verb: '设置' })
+    let seteditpwd = askPassword('editpwd', { verb: '设置' })
+    let setmanagepwd = askPassword('managepwd', { verb: '设置' })
 
     if (setviewpwd === false || seteditpwd === false || setmanagepwd === false) {
         return false
