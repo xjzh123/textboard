@@ -4,7 +4,7 @@ import * as remarkable from 'https://cdn.skypack.dev/remarkable'
 
 import hljs from 'https://cdn.skypack.dev/highlight.js'
 
-import misc from './misc.js';
+import misc from './misc.js'
 
 import { cookie, Cookie } from 'https://cdn.jsdelivr.net/npm/cookie.js'
 
@@ -15,7 +15,7 @@ import { cookie, Cookie } from 'https://cdn.jsdelivr.net/npm/cookie.js'
  * @returns {Element}
  */
 function $(selector) {
-    return document.querySelector(selector);
+    return document.querySelector(selector)
 }
 
 if (index.length > 0) {
@@ -28,60 +28,94 @@ let md = new remarkable.Remarkable({
     highlight: function (str, lang) {
         if (lang && hljs.getLanguage(lang)) {
             try {
-                return hljs.highlight(lang, str).value;
+                return hljs.highlight(lang, str).value
             } catch (err) { }
         }
 
         try {
-            return hljs.highlightAuto(str).value;
+            return hljs.highlightAuto(str).value
         } catch (err) { }
 
-        return ''; // use external default escaping
+        return '' // use external default escaping
     }
-});
+})
 
 md.core.ruler.enable([
     'abbr',
-]);
+])
 md.block.ruler.enable([
     'footnote',
     'deflist',
-]);
+])
 md.inline.ruler.enable([
     'footnote_inline',
     'ins',
     'mark',
     'sub',
     'sup',
-]);
+])
 
 
 md.renderer.rules.text = function (tokens, idx) {
-    tokens[idx].content = remarkable.utils.escapeHtml(tokens[idx].content);
+    tokens[idx].content = remarkable.utils.escapeHtml(tokens[idx].content)
 
     if (tokens[idx].content.indexOf('?') !== -1) {
         tokens[idx].content = tokens[idx].content.replace(/(^|\s)(\/?\?)\S+?(?=[,.!?:)]?\s|$)/gm, function (match) {
-            var pageLink = remarkable.utils.escapeHtml(remarkable.utils.replaceEntities(match.trim()));
-            var whiteSpace = '';
+            var pageLink = remarkable.utils.escapeHtml(remarkable.utils.replaceEntities(match.trim()))
+            var whiteSpace = ''
             if (match[0] !== '?' && match[0] !== '/') {
-                whiteSpace = match[0];
+                whiteSpace = match[0]
             }
-            return whiteSpace + '<a href="' + pageLink.replace(/^\s?\//, '') + '" target="_blank" rel="noopener">' + pageLink + '</a>';
-        });
+            return whiteSpace + '<a href="' + pageLink.replace(/^\s?\//, '') + '" target="_blank" rel="noopener">' + pageLink + '</a>'
+        })
     }
 
-    return tokens[idx].content;
-};
+    return tokens[idx].content
+}
 
 /* ---------------------------------------------------------------- */
 
 function updateTextareaSize() {
     let textarea = $('#textarea')
-    textarea.style.height = 0;
-    textarea.style.height = textarea.scrollHeight + 'px';
+    textarea.style.height = 0
+    textarea.style.height = textarea.scrollHeight + 'px'
 }
 
 $('#textarea').addEventListener('input', updateTextareaSize)
+
+$('#textarea').addEventListener('keydown', function (e) {
+    if (e.keyCode == 83 /* S */ && e.ctrlKey) {
+        e.preventDefault()
+        savePage()
+    } else if (e.keyCode == 27 /* ESC */) {
+        e.preventDefault()
+
+        $('#textarea').blur()
+    } else if (e.keyCode == 9 /* TAB */) {
+        // Tab complete nicknames starting with @
+
+        if (e.ctrlKey) {
+            // Skip autocompletion and tab insertion if user is pressing ctrl
+            // ctrl-tab is used by browsers to cycle through tabs
+            return;
+        }
+        e.preventDefault()
+        insertAtCursor('\t')
+    }
+})
+
+function insertAtCursor(text) {
+    var input = $('#textarea')
+    var start = input.selectionStart || 0
+    var before = input.value.substr(0, start)
+    var after = input.value.substr(start)
+
+    before += text
+    input.value = before + after
+    input.selectionStart = input.selectionEnd = before.length
+
+    updateTextareaSize()
+}
 
 updateTextareaSize()
 
@@ -217,7 +251,7 @@ async function createNew() {
     if (setviewpwd === false || seteditpwd === false || setmanagepwd === false) {
         return false
     }
-    
+
 
     locals.loadSuccessful = false
     showContent('正在提交……')
@@ -343,6 +377,16 @@ function hideEditor() {
     $('#submit').classList.add('hidden')
     $('#text').classList.remove('hidden')
     $('#textarea').classList.add('hidden')
+}
+
+/* ---------------------------------------------------------------- */
+
+window.onbeforeunload = function (e) {
+    if (locals.editing) {
+        e.preventDefault()
+
+        return '' //https://developer.mozilla.org/docs/Web/API/Window/beforeunload_event
+    }
 }
 
 /* ---------------------------------------------------------------- */
