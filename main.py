@@ -59,8 +59,6 @@ def logger(func):
             )
         )
         res = func(*args, **kwargs)
-        if res.content_type == 'application/json':
-            app.logger.debug('returns: ' + str(res.data))
         return res
     return decorated
 
