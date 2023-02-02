@@ -221,6 +221,12 @@ def link(index):
     return redirect('/?' + index)
 
 
+@app.after_request
+def after_request(r):
+    r.direct_passthrough = False
+    return r
+
+
 if __name__ == '__main__':
     if gettrace():  # check whether program is running under debug mode
         app.run(host='0.0.0.0')
